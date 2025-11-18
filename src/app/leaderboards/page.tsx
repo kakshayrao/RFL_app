@@ -24,8 +24,7 @@ type TeamStanding = {
 
 // Proportional points adjustment for 11-player teams (display-only)
 const ELEVEN_PLAYER_TEAMS = new Set<string>([
-  '76514ecd-e8c9-4868-892f-30fb2d1c42d6', // Crusaders (11 players)
-  '7a9419d7-0c0d-4c2d-b962-24af3448d0b6', // Deccan Warriors (11 players)
+  '4f7c2b8d-e8d8-44c8-b189-fc07d05390bd', // Muscle Mania (11 players)
 ]);
 const ELEVEN_TEAM_FACTOR = 10 / 11;
 
