@@ -62,15 +62,15 @@ function addDaysUTC(d: Date, days: number): Date {
   return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() + days));
 }
 
-// Fixed season window: Oct 15, 2025 → Jan 12, 2026
+// Fixed season window: Sept 1, 2025 → Nov 30, 2025
 function seasonFixedStart(): Date {
-  return new Date(Date.UTC(2025, 9, 15)); // Oct 15, 2025
+  return new Date(Date.UTC(2025, 8, 1)); // Sept 1, 2025
 }
 function seasonFixedEnd(): Date {
-  return new Date(Date.UTC(2026, 0, 12)); // Jan = 0
+  return new Date(Date.UTC(2025, 10, 30)); // Nov 30, 2025 (November = 10)
 }
-const SEASON_START_LOCAL_STR = '2025-10-15';
-const SEASON_END_LOCAL_STR = '2026-01-12';
+const SEASON_START_LOCAL_STR = '2025-09-01';
+const SEASON_END_LOCAL_STR = '2025-11-30';
 function firstWeekStart(_year: number): Date {
   // Week 1 starts exactly on season start (Oct 15, 2025 - Wednesday)
   return seasonFixedStart();
@@ -663,7 +663,7 @@ export default function DashboardPage() {
     } finally { setLoading(false); }
   }
 
-  // League bounds (Sept 1 to Dec 1 of current year) for navigation
+  // League bounds (Sept 1 to Nov 30 of current year) for navigation
   const currentYear = new Date().getUTCFullYear();
   const seasonStart = firstWeekStart(currentYear);
   const seasonEnd = seasonEndStart(currentYear);

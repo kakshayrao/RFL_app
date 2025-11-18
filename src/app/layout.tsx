@@ -11,8 +11,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "FFL Dashboard - Family Fitness League",
-  description: "Dashboard for Family Fitness League team management and workout tracking",
+  title: "RFL Dashboard - RCLD Fitness League",
+  description: "Dashboard for RCLD Fitness League team management and workout tracking",
 };
 
 export default function RootLayout({

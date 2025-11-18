@@ -28,6 +28,14 @@ const ELEVEN_PLAYER_TEAMS = new Set<string>([
 ]);
 const ELEVEN_TEAM_FACTOR = 10 / 11;
 
+// Helper function to convert team name to logo filename
+function getTeamLogoPath(teamName: string): string {
+  const cleanName = teamName
+    .replace(/\s+/g, '') // Remove all spaces
+    .replace(/[^a-zA-Z0-9]/g, ''); // Remove all non-alphanumeric characters
+  return `/img/${cleanName}_Logo.jpeg`;
+}
+
 export default function LeaderboardsPage() {
   const { data: session } = useSession();
   const router = useRouter();
@@ -129,7 +137,7 @@ export default function LeaderboardsPage() {
   }, [page]);
 
   // Utilities for period boundaries (LOCAL date semantics to avoid UTC drift)
-  const seasonStartDate = useMemo(() => new Date(2025, 9, 15), []); // Oct 15 2025 (local)
+  const seasonStartDate = useMemo(() => new Date(2025, 8, 1), []); // Sept 1 2025 (local)
   const startOfLocalDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
   const todayLocal = () => startOfLocalDay(new Date());
   const ymdLocal = (d: Date) => {
@@ -403,11 +411,7 @@ export default function LeaderboardsPage() {
                 </thead>
                 <tbody>
                   {standings.map((t) => {
-                    // Convert team name to logo filename format
-                    const logoName = t.teamName
-                      .replace(/\s+/g, '_')
-                      .replace(/[^a-zA-Z0-9_]/g, '') + '_Logo.jpeg';
-                    const logoPath = `/img/${logoName}`;
+                    const logoPath = getTeamLogoPath(t.teamName);
                     
                     return (
                       <tr key={t.teamId} className="border-t hover:bg-gray-50">
@@ -580,7 +584,7 @@ export default function LeaderboardsPage() {
                             <td className="py-2 pr-2">
                               <div className="flex items-center gap-2">
                                 <img
-                                  src={`/img/${r.team_name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '')}_Logo.jpeg`}
+                                  src={getTeamLogoPath(r.team_name)}
                                   alt={`${r.team_name} logo`}
                                   className="w-6 h-6 rounded border border-gray-200 object-cover"
                                   onError={(e) => {

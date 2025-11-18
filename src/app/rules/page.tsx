@@ -22,7 +22,7 @@ export default function RulesPage() {
           <div className="flex items-start gap-3">
             <Calendar className="w-5 h-5 text-rfl-coral mt-0.5" />
             <div>
-              <strong>Oct 15, 2025 – Jan 12, 2026</strong>
+              <strong>Sep 1, 2025 – Nov 12, 2026</strong>
               <div className="text-sm text-gray-600">90‑day team challenge to sweat, smile and win.</div>
             </div>
           </div>
@@ -30,13 +30,13 @@ export default function RulesPage() {
             <Heart className="w-5 h-5 text-pink-500 mt-0.5" />
             <div>
               <strong>Fitness • Fun • Friendship</strong>
-              <div className="text-sm text-gray-600">8 teams × 12–13 players each.</div>
+              <div className="text-sm text-gray-600">5 teams × 10–11 players each.</div>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <Trophy className="w-5 h-5 text-green-600 mt-0.5" />
             <div>
-              Fun competitions for extra points. Grand Finale & Awards — around Jan 25th.
+              Fun competitions for extra points. Grand Finale & Awards.
             </div>
           </div>
         </CardContent>
@@ -157,7 +157,7 @@ export default function RulesPage() {
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
-              <span className="text-sm sm:text-base">To claim: log <strong>"Rest Day"</strong> in your PFL account that day (by 11:59 PM) — earns <strong>1 point</strong>.</span>
+              <span className="text-sm sm:text-base">To claim: log <strong>"Rest Day"</strong> in your RFL account that day (by 11:59 PM) — earns <strong>1 point</strong>.</span>
             </div>
             <div className="flex items-start gap-3">
               <Trophy className="w-6 h-6 text-yellow-500 mt-0.5 flex-shrink-0" />
@@ -179,7 +179,7 @@ export default function RulesPage() {
         <CardContent className="space-y-3">
           <div className="flex items-start gap-3">
             <CheckCircle className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
-            <span className="text-sm sm:text-base">Screenshot from a fitness app posted same day in your PFL account.</span>
+            <span className="text-sm sm:text-base">Screenshot from a fitness app posted same day in your RFL account.</span>
           </div>
           <div className="flex items-start gap-3">
             <CheckCircle className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
@@ -203,7 +203,7 @@ export default function RulesPage() {
           </div>
           <div className="flex items-start gap-3">
             <Heart className="w-6 h-6 text-pink-500 mt-0.5 flex-shrink-0" />
-            <span className="text-sm sm:text-base"><strong>FFL Medical Emergency (ME) Rule:</strong> If a player has a verified ME (7+ days, approved by Governors), their rest days are used first. If more days are needed, other PFL players may voluntarily donate unused rest days.</span>
+            <span className="text-sm sm:text-base"><strong>RCLD Medical Emergency (ME) Rule:</strong> If a player has a verified ME (7+ days, approved by Governors), their rest days are used first. If more days are needed, other RFL players may voluntarily donate unused rest days.</span>
           </div>
         </CardContent>
       </Card>
