@@ -411,7 +411,10 @@ export default function LeaderboardsPage() {
                 </thead>
                 <tbody>
                   {standings.map((t) => {
-                    const logoPath = getTeamLogoPath(t.teamName);
+                    const logoName = t.teamName
+                      .replace(/\s+/g, '_')
+                      .replace(/[^a-zA-Z0-9_]/g, '') + '_Logo.jpeg';
+                    const logoPath = `/img/${logoName}`;
                     
                     return (
                       <tr key={t.teamId} className="border-t hover:bg-gray-50">
@@ -584,7 +587,7 @@ export default function LeaderboardsPage() {
                             <td className="py-2 pr-2">
                               <div className="flex items-center gap-2">
                                 <img
-                                  src={getTeamLogoPath(r.team_name)}
+                                  src={`/img/${r.team_name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '')}_Logo.jpeg`}
                                   alt={`${r.team_name} logo`}
                                   className="w-6 h-6 rounded border border-gray-200 object-cover"
                                   onError={(e) => {
