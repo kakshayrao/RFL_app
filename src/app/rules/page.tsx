@@ -6,7 +6,7 @@ export default function RulesPage() {
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-rfl-navy mb-2">FFL Rules & Guidelines</h1>
+        <h1 className="text-3xl font-bold text-rfl-navy mb-2">RFL Rules & Guidelines</h1>
         <p className="text-gray-600">Clear, simple rules for a fair and fun season — PWA‑friendly on phone and desktop.</p>
       </div>
 
@@ -22,7 +22,7 @@ export default function RulesPage() {
           <div className="flex items-start gap-3">
             <Calendar className="w-5 h-5 text-rfl-coral mt-0.5" />
             <div>
-              <strong>Sep 1, 2025 – Nov 12, 2026</strong>
+              <strong>Sep 1, 2025 – Nov 21, 2026</strong>
               <div className="text-sm text-gray-600">90‑day team challenge to sweat, smile and win.</div>
             </div>
           </div>
@@ -53,11 +53,10 @@ export default function RulesPage() {
             <ul className="space-y-2 list-disc list-inside">
               <li><strong>Brisk Walk / Jog / Run</strong> — 4 km OR 45 mins</li>
               <li><strong>Weightlifting / Gym</strong> — 45 mins</li>
-              <li><strong>Yoga / Pilates / Zumba / Dance / Swimming / Cycling / Horse Riding</strong> — 45 mins</li>
-              <li><strong>Field Sports</strong> (Badminton, Pickleball, Tennis, Cricket, Basketball, etc.) — 45 mins</li>
+              <li><strong>Yoga / Pilates / Zumba / Dance / Swimming / Cycling </strong> — 45 mins</li>
+              <li><strong>Field Sports</strong> (Badminton, Pickleball, Tennis, etc.) — 45 mins</li>
               <li><strong>Golf</strong> — 9‑hole round</li>
               <li><strong>Steps</strong> — 10,000 steps in a day</li>
-              <li><strong>65+ (Seniors)</strong>: 30 mins or 5,000 steps count. Seniors‑only extras: meditation, chanting, writing, breathing (pranayama).</li>
             </ul>
             
             <div className="mt-4 space-y-3">
