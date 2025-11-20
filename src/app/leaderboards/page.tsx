@@ -234,7 +234,7 @@ export default function LeaderboardsPage() {
           ents.forEach(e2 => {
             const rr = typeof e2.rr_value === 'number' ? e2.rr_value : Number(e2.rr_value || 0);
             const isRest = String(e2.type) === 'rest';
-            if (isRest && rr > 0) pts += 1; else if (!isRest) pts += 1;
+            pts += 1; // Count all entries, including rest entries with rr_value = 0
             if (rr > 0) { rrSum += rr; rrCnt += 1; }
           });
           // Apply proportional factor for 11-player teams, then ROUND to nearest integer
