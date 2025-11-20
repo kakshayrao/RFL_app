@@ -49,7 +49,7 @@ function parseYmdLocal(s: string): Date {
   return new Date(y, (m||1)-1, d||1);
 }
 
-const SEASON_START = '2025-10-15';
+const SEASON_START = '2025-09-01';
 
 export default function GovernorPage() {
   const { data: session, status } = useSession();
@@ -405,20 +405,39 @@ export default function GovernorPage() {
           const tid = String(e.team_id || '');
           if (!tid) continue;
           const rec = teamAgg.get(tid) || { points: 0, rrSum: 0, rrCnt: 0 };
-          rec.points += 1;
+          rec.points += 1; // Count all entries, including rest with rr_value = 0
           const rr = typeof e.rr_value === 'number' ? e.rr_value : Number(e.rr_value || 0);
           if (rr > 0) { rec.rrSum += rr; rec.rrCnt += 1; }
           teamAgg.set(tid, rec);
         }
+        
+        // Fetch total Special Challenge bonus points per team (sum of scores)
+        const { data: chScores } = await getSupabase()
+          .from('special_challenge_team_scores')
+          .select('team_id, score');
+        const challengeBonusByTeam = new Map<string, number>();
+        (chScores || []).forEach((r: any) => {
+          const tid = String(r.team_id);
+          const s = r.score == null ? 0 : Number(r.score);
+          challengeBonusByTeam.set(tid, (challengeBonusByTeam.get(tid) || 0) + (Number.isFinite(s) ? s : 0));
+        });
+        
         const teamRows: TeamRow[] = teamList.map(t => {
           const agg = teamAgg.get(String(t.id)) || { points: 0, rrSum: 0, rrCnt: 0 };
           const avg = agg.rrCnt > 0 ? Math.round((agg.rrSum / agg.rrCnt) * 100) / 100 : 0;
+          
+          // Apply proportional factor for 11-player teams, then ROUND to nearest integer
           let adjusted = agg.points;
           if (ELEVEN_PLAYER_TEAMS.has(String(t.id))) {
             adjusted = agg.points * ELEVEN_TEAM_FACTOR;
           }
           const pointsRounded = Math.round(adjusted);
-          return { team_id: String(t.id), team_name: String(t.name), points: pointsRounded, avg_rr: avg } as TeamRow;
+          
+          // Add Special Challenge bonus AFTER proportional rounding (display-only rule)
+          const bonus = Number(challengeBonusByTeam.get(String(t.id)) || 0);
+          const finalPoints = pointsRounded + (Number.isFinite(bonus) ? bonus : 0);
+          
+          return { team_id: String(t.id), team_name: String(t.name), points: finalPoints, avg_rr: avg } as TeamRow;
         });
         setTeamLeaderboard(teamRows);
 

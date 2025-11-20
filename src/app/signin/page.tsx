@@ -43,9 +43,14 @@ export default function SignInPage() {
       return;
     }
     if (res?.ok) {
-      // In production, session cookie may require a full reload; redirect hard.
-      // Dashboard will further redirect governors to /governor.
-      window.location.replace('/dashboard');
+      // Get the session to check role
+      const sess = await getSession();
+      const role = (sess as any)?.user?.role as 'player' | 'leader' | 'governor' | undefined;
+      if (role === 'governor') {
+        window.location.replace('/governor');
+      } else {
+        window.location.replace('/dashboard');
+      }
       return;
     }
     setIsLoading(false);

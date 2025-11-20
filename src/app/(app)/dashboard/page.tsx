@@ -309,12 +309,17 @@ export default function DashboardPage() {
     const ws = weekStart || viewWeekStart;
     const we = new Date(ws);
     we.setUTCDate(ws.getUTCDate() + 6);
+    
+    // Cap the end date at Nov 21, 2025 (dates from 22 onwards should not appear)
+    const cutoffDate = new Date(Date.UTC(2025, 10, 21)); // Nov 21, 2025
+    const actualEnd = we.getTime() > cutoffDate.getTime() ? cutoffDate : we;
+    
     const { data, error } = await getSupabase()
       .from('entries')
       .select('date,type,workout_type,duration,distance,steps,holes,status,rr_value')
       .eq('user_id', userId)
       .gte('date', formatDateYYYYMMDD(ws))
-      .lte('date', formatDateYYYYMMDD(we))
+      .lte('date', formatDateYYYYMMDD(actualEnd))
       .order('date', { ascending: true });
     if (error) return;
     const entries = (data || []) as Array<Omit<ActivityRow,'points'>>;
@@ -324,6 +329,12 @@ export default function DashboardPage() {
       const day = new Date(ws);
       day.setUTCDate(ws.getUTCDate() + i);
       const ds = formatDateYYYYMMDD(day);
+      
+      // Skip dates from Nov 22 onwards
+      const dayDate = new Date(Date.UTC(new Date(ds).getUTCFullYear(), new Date(ds).getUTCMonth(), new Date(ds).getUTCDate()));
+      const cutoff = new Date(Date.UTC(2025, 10, 21));
+      if (dayDate.getTime() > cutoff.getTime()) break;
+      
       const e = entries.find(x => String(x.date) === ds);
       const isRest = e?.type === 'rest' && e?.status === 'approved';
       if (isRest) restCount++;
@@ -663,12 +674,12 @@ export default function DashboardPage() {
     } finally { setLoading(false); }
   }
 
-  // League bounds (Sept 1 to Nov 30 of current year) for navigation
+  // League bounds (Sept 1 to Nov 21 of current year) for navigation
   const currentYear = new Date().getUTCFullYear();
   const seasonStart = firstWeekStart(currentYear);
-  const seasonEnd = seasonEndStart(currentYear);
+  const nov21Cutoff = new Date(Date.UTC(2025, 10, 21)); // Nov 21, 2025
   const canGoPrev = viewWeekStart.getTime() > seasonStart.getTime();
-  const canGoNext = viewWeekStart.getTime() < seasonEnd.getTime();
+  const canGoNext = viewWeekStart.getTime() < nov21Cutoff.getTime();
   const weekNumber = Math.max(
     1,
     Math.floor(
@@ -817,7 +828,8 @@ export default function DashboardPage() {
                   className={`p-1 rounded border ${canGoNext ? 'hover:bg-gray-50' : 'opacity-50 cursor-not-allowed'}`}
                   onClick={() => canGoNext && setViewWeekStart(prev => {
                     const nextWs = addDaysUTC(prev, 7);
-                    return nextWs.getTime() > seasonEnd.getTime() ? seasonEnd : nextWs;
+                    const nov21Cutoff = new Date(Date.UTC(2025, 10, 21)); // Nov 21, 2025
+                    return nextWs.getTime() > nov21Cutoff.getTime() ? nov21Cutoff : nextWs;
                   })}
                   aria-label="Next week"
                 >
