@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Calendar, ChevronLeft, ChevronRight, TrendingUp } from "lucide-react";
+import { Plus, Calendar, ChevronLeft, ChevronRight, TrendingUp, Volume2, Volume2Icon, Music2, MusicIcon, Music3Icon, Music4, AudioLines, Music2Icon, KeyboardMusicIcon, Music4Icon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -186,6 +186,7 @@ export default function DashboardPage() {
   const [openWorkout, setOpenWorkout] = useState(false);
   const [openRest, setOpenRest] = useState(false);
   const [concludedMode, setConcludedMode] = useState<'workout' | 'rest' | null>(null);
+  const [showAudioPopup, setShowAudioPopup] = useState(false);
   const [date, setDate] = useState<string>(todayStr());
   const [activity, setActivity] = useState("steps");
   const [duration, setDuration] = useState<number | "">(45);
@@ -252,8 +253,8 @@ export default function DashboardPage() {
   }, []);
   const seasonGuardMsg = 'Season runs Oct 15, 2025 to Jan 12, 2026. Logging opens on Oct 15.';
   const concludedMessages: Record<'workout' | 'rest', string> = {
-    workout: `Congrats on an incredible 82 day journey. No more workout entries — just pride, memories, and friendships!`,
-    rest: `Congrats on an incredible 82 day journey. No more rest entries — just pride, memories, and friendships!`,
+    workout: `Congrats on an incredible 82 day journey. No more Workout entries — just Pride, Memories, and Friendships!`,
+    rest: `Congrats on an incredible 82 day journey. No more Rest entries — just Pride, Memories, and Friendships!`,
   };
   
   const validateWorkout = useMemo(() => {
@@ -702,7 +703,18 @@ export default function DashboardPage() {
       <div className="max-w-4xl mx-auto space-y-8 mb-8">
         {/* Dashboard title positioned above Summary card content */}
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-rfl-navy mb-2">Welcome, {session?.user?.name?.split(' ')[0] || 'User'}!</h1>
+          <div className="flex items-center justify-between mb-2">
+            <h1 className="text-3xl font-bold text-rfl-navy">Welcome, {session?.user?.name?.split(' ')[0] || 'User'}!</h1>
+            <button
+              onClick={() => setShowAudioPopup(true)}
+              // className="p-3 rounded-md border border-gray-300 hover:bg-gray-50 bg-white flex items-center justify-center"
+              className="p-3 rounded-md border border-gray-300 hover:bg-gray-50 bg-white flex items-center justify-center -translate-x-[20px] translate-y-[10px] transform"
+              aria-label="Show audio video"
+              title="Show audio video"
+            >
+              <Music4Icon className="w-6 h-6 text-rfl-navy" />
+            </button>
+          </div>
           <p className="text-gray-600">Let's crush those fitness goals today 💪</p>
       </div>
         <Card>
@@ -915,6 +927,29 @@ export default function DashboardPage() {
             </p>
             <Button className="bg-rfl-navy text-white w-full" onClick={() => setConcludedMode(null)}>
               Got it
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {showAudioPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl p-6 space-y-4">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-2xl font-semibold text-rfl-navy">RFL Anthem</h2>
+            </div>
+            <div className="w-full">
+              <video
+                controls
+                autoPlay
+                className="w-full rounded-lg"
+                src="/audio/VIDEO-2025-11-21-14-07-53.mp4"
+              >
+                Your browser does not support the video tag.
+              </video>
+            </div>
+            <Button className="bg-rfl-navy text-white w-full" onClick={() => setShowAudioPopup(false)}>
+              Close
             </Button>
           </div>
         </div>
