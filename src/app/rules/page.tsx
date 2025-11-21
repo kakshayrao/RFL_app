@@ -133,7 +133,7 @@ export default function RulesPage() {
             </div>
             <div className="flex items-start gap-3">
               <ShieldCheck className="w-6 h-6 text-yellow-500 mt-0.5 flex-shrink-0" />
-              <span className="text-sm sm:text-base"><strong>Fair Play:</strong> "FFL FAIR PLAY" award for honesty and sportsmanship. <em>Negative points possible</em> for cheating.</span>
+              <span className="text-sm sm:text-base"><strong>Fair Play:</strong> "RFL FAIR PLAY" award for honesty and sportsmanship. <em>Negative points possible</em> for cheating.</span>
             </div>
             <div className="flex items-start gap-3">
               <Users className="w-6 h-6 text-rfl-light-blue mt-0.5 flex-shrink-0" />
