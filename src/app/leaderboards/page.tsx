@@ -358,14 +358,14 @@ export default function LeaderboardsPage() {
                 <CardDescription>Standings table</CardDescription>
               </div>
               <div className="flex items-center gap-2">
-                <button
+                {/* <button     AUDIO OPTION
                   aria-label={isPlaying ? 'Stop music' : 'Play music'}
                   onClick={toggleAudio}
                   className={`p-2 rounded-md border border-gray-300 ${isPlaying ? 'bg-rfl-coral text-white' : 'hover:bg-gray-50'}`}
                   title={isPlaying ? 'Stop' : 'Play'}
                 >
                   {isPlaying ? <VolumeX className="w-4 h-4"/> : <Volume2 className="w-4 h-4"/>}
-                </button>
+                </button> */}
                 <div className="relative dropdown-container">
                 <button
                   onClick={() => setDropdownOpen((v)=>!v)}
