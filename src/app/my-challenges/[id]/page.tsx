@@ -117,25 +117,7 @@ export default function ChallengeDetailPage() {
     }
   }, [challengeId, loading, router])
 
-  function formatDMY(s: string | null | undefined): string {
-    if (!s) return '—'
-    const parts = String(s).split('-')
-    if (parts.length !== 3) return String(s)
-    const [y, m, d] = parts
-    if (!y || !m || !d) return String(s)
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    const monthIndex = parseInt(m) - 1
-    if (monthIndex < 0 || monthIndex > 11) return String(s)
-    const monthName = monthNames[monthIndex]
-    return `${d} ${monthName}`
-  }
-
-  function isChallengeActive(start?: string | null, end?: string | null): boolean {
-    if (!start || !end) return false
-    const now = new Date()
-    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
-    return today >= String(start) && today <= String(end)
-  }
+  // Date and active status are intentionally not shown in player detail view.
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-6 space-y-6">
@@ -176,31 +158,12 @@ export default function ChallengeDetailPage() {
                 <p className="mt-1 text-sm tracking-wide text-gray-500">{challenge.name}</p>
               </div>
               <div className="flex flex-wrap gap-2">
-                {isChallengeActive(challenge.start_date, challenge.end_date) ? (
-                  <span className="inline-flex items-center rounded-full border border-green-200 bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
-                    Active
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center rounded-full border border-gray-200 bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
-                    Not Active
-                  </span>
-                )}
+                {/* Active/Not Active status hidden in player view */}
               </div>
             </div>
           </section>
 
-          <section className="rounded-lg border border-gray-200 bg-white px-6 py-5 shadow-sm">
-            <div className="grid gap-6 sm:grid-cols-2">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Start Date</p>
-                <p className="mt-1 text-sm text-gray-800">{formatDMY(challenge.start_date)}</p>
-              </div>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">End Date</p>
-                <p className="mt-1 text-sm text-gray-800">{formatDMY(challenge.end_date)}</p>
-              </div>
-            </div>
-          </section>
+          {/* Start/End dates removed from player detail view */}
 
           <section className="rounded-lg border border-gray-200 bg-white px-6 py-5 shadow-sm">
             <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Rules & Description</p>

@@ -79,35 +79,7 @@ export default function MyChallengesPage() {
     load()
   }, [])
 
-  // Format 'YYYY-MM-DD' → 'DD MMM'
-  function formatDMY(s: string | null | undefined): string {
-    if (!s) return '—'
-    const parts = String(s).split('-')
-    if (parts.length !== 3) return String(s)
-    const [y, m, d] = parts
-    if (!y || !m || !d) return String(s)
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    const monthIndex = parseInt(m) - 1
-    if (monthIndex < 0 || monthIndex > 11) return String(s)
-    const monthName = monthNames[monthIndex]
-    return `${d} ${monthName}`
-  }
-
   const sortedChallenges = useMemo(() => challenges, [challenges])
-  // Today as local YMD
-  function todayLocalYMD(): string {
-    const now = new Date()
-    const y = now.getFullYear()
-    const m = String(now.getMonth() + 1).padStart(2, '0')
-    const d = String(now.getDate()).padStart(2, '0')
-    return `${y}-${m}-${d}`
-  }
-  // Active if today within [start, end]
-  function isChallengeActive(start?: string | null, end?: string | null): boolean {
-    if (!start || !end) return false
-    const t = todayLocalYMD()
-    return t >= String(start) && t <= String(end)
-  }
 
   if (loading) {
     return (
@@ -122,14 +94,11 @@ export default function MyChallengesPage() {
       <h1 className="text-xl font-semibold text-rfl-navy">My Challenges</h1>
       <div className="space-y-3">
         {sortedChallenges.map((ch, idx) => {
-          const active = isChallengeActive(ch.start_date, ch.end_date)
           return (
             <Link
               key={ch.id}
               href={`/my-challenges/${ch.id}`}
-              className={`flex items-center gap-4 rounded-lg border bg-white px-5 py-4 shadow-sm transition hover:-translate-y-[1px] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-rfl-navy ${
-                active ? 'border-green-300 ring-offset-2' : ''
-              }`}
+              className={`flex items-center gap-4 rounded-lg border bg-white px-5 py-4 shadow-sm transition hover:-translate-y-[1px] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-rfl-navy`}
             >
               <span className="flex h-10 w-10 items-center justify-center rounded-full bg-rfl-navy text-sm font-semibold text-white">
                 {idx + 1}
@@ -137,19 +106,11 @@ export default function MyChallengesPage() {
               <div className="flex flex-1 flex-col gap-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="text-base font-semibold text-rfl-navy">{ch.name}</p>
-                  {active && (
-                    <span className="inline-flex items-center rounded-full border border-green-200 bg-green-100 px-3 py-1 text-xs font-medium uppercase tracking-wide text-green-700">
-                      Active
-                    </span>
-                  )}
                   {challengeHasScore[ch.id] && (
                     <span className="inline-flex items-center rounded-full border border-indigo-200 bg-indigo-50 px-2 py-0.5 text-[10px] font-medium text-indigo-700">
                       Scores Posted
                     </span>
                   )}
-                </div>
-                <div className="text-xs text-gray-500">
-                  {formatDMY(ch.start_date)} to {formatDMY(ch.end_date)}
                 </div>
               </div>
               <svg className="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="none" aria-hidden="true">

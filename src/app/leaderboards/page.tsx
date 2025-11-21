@@ -503,7 +503,6 @@ export default function LeaderboardsPage() {
                   <div className="absolute right-0 mt-2 w-72 bg-white border border-gray-200 rounded-md shadow-lg z-20">
                     <div className="py-1 max-h-72 overflow-auto">
                       {challenges.map((c) => {
-                        const active = isActiveChallenge(c);
                         const isSelected = selectedChallengeId === c.id;
                         return (
                           <button
@@ -517,17 +516,9 @@ export default function LeaderboardsPage() {
                             }}
                           >
                             <span className="flex items-center justify-between">
-                          <span className="px-3 py-1 rounded-md bg-gray-100 text-sm font-medium text-rfl-navy border border-gray-200">
-                            {c.name}
-                          </span>
-                              {active && (
-                            <span className="ml-2 text-[11px] px-2 py-0.5 rounded-full bg-green-100 text-green-700 border border-green-200">
-                                  Active
-                                </span>
-                              )}
-                            </span>
-                            <span className="text-xs text-gray-500">
-                          {formatChallengeDate(c.start_date)} to {formatChallengeDate(c.end_date)}
+                              <span className="px-3 py-1 rounded-md bg-gray-100 text-sm font-medium text-rfl-navy border border-gray-200">
+                                {c.name}
+                              </span>
                             </span>
                           </button>
                         );
@@ -551,14 +542,7 @@ export default function LeaderboardsPage() {
                     <span className="inline-flex items-center px-4 py-2 rounded-md bg-gray-100 text-rfl-navy font-semibold border border-gray-200 max-w-[240px] truncate">
                       {selectedChallenge.name}
                     </span>
-                    <span className="text-gray-600">
-                      {formatChallengeDate(selectedChallenge.start_date)} to {formatChallengeDate(selectedChallenge.end_date)}
-                    </span>
-                    {isActiveChallenge(selectedChallenge) && (
-                      <span className="text-xs px-3 py-1 rounded-full bg-green-100 text-green-700 border border-green-200">
-                        Active
-                      </span>
-                    )}
+                    {/* Dates and Active badge removed from player-facing challenge header */}
                   </div>
                 )}
                 <table className="w-full text-sm">
@@ -579,10 +563,9 @@ export default function LeaderboardsPage() {
                       </td></tr>
                     ) : (
                       scoresForSelected.map((r, idx) => {
-                        const active = isActiveChallenge(selectedChallenge);
                         const showNotUpdated = (r.score == null);
                         return (
-                          <tr key={r.team_id} className={`border-t ${active ? 'hover:bg-gray-50' : ''}`}>
+                          <tr key={r.team_id} className={`border-t hover:bg-gray-50`}>
                             <td className="py-2 pr-2 [font-variant-numeric:tabular-nums] text-sm w-12">{idx + 1}</td>
                             <td className="py-2 pr-2">
                               <div className="flex items-center gap-2">
