@@ -59,7 +59,7 @@ export default function LeaderboardsPage() {
   // Initialize audio element lazily
   const ensureAudio = () => {
     if (!audioRef.current) {
-      const el = new Audio('/audio/leaderboard-theme.mp3');
+      const el = new Audio('/audio/VIDEO-2025-11-21-14-07-53.mp4');
       el.preload = 'auto';
       el.onended = () => setIsPlaying(false);
       audioRef.current = el;

@@ -185,6 +185,7 @@ export default function DashboardPage() {
 
   const [openWorkout, setOpenWorkout] = useState(false);
   const [openRest, setOpenRest] = useState(false);
+  const [concludedMode, setConcludedMode] = useState<'workout' | 'rest' | null>(null);
   const [date, setDate] = useState<string>(todayStr());
   const [activity, setActivity] = useState("steps");
   const [duration, setDuration] = useState<number | "">(45);
@@ -238,14 +239,23 @@ export default function DashboardPage() {
     }
   }, [role, router]);
   // Compute on client after mount to avoid SSR timezone discrepancies
+  // const [canLogToday, setCanLogToday] = useState<boolean>(false);
+  // useEffect(() => {
+  //   const t = todayStr();
+  //   setCanLogToday(t >= SEASON_START_LOCAL_STR && t <= SEASON_END_LOCAL_STR);
+  // }, []);
+  // const seasonGuardMsg = 'Season runs Oct 15, 2025 to Jan 12, 2026. Logging opens on Oct 15.';
   const [canLogToday, setCanLogToday] = useState<boolean>(false);
   useEffect(() => {
     const t = todayStr();
     setCanLogToday(t >= SEASON_START_LOCAL_STR && t <= SEASON_END_LOCAL_STR);
   }, []);
   const seasonGuardMsg = 'Season runs Oct 15, 2025 to Jan 12, 2026. Logging opens on Oct 15.';
+  const concludedMessages: Record<'workout' | 'rest', string> = {
+    workout: `Congrats on an incredible 82 day journey. No more workout entries — just pride, memories, and friendships!`,
+    rest: `Congrats on an incredible 82 day journey. No more rest entries — just pride, memories, and friendships!`,
+  };
   
-
   const validateWorkout = useMemo(() => {
     if (!userId) return { valid: false, error: "" };
     const config = ACTIVITY_CONFIGS[activity];
@@ -698,8 +708,19 @@ export default function DashboardPage() {
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <Button disabled={!canLogToday} className="bg-rfl-navy hover:bg-rfl-navy/70 text-white h-8 flex-1 disabled:opacity-50" onClick={() => { if(!canLogToday){alert(seasonGuardMsg);return;} setDate(todayStr()); setOpenWorkout(true); }}>Add Workout</Button>
-              <Button disabled={!canLogToday} variant="outline" className="h-8 flex-1 border-black text-rfl-navy hover:bg-rfl-navy/70 disabled:opacity-50" onClick={() => { if(!canLogToday){alert(seasonGuardMsg);return;} setDate(todayStr()); setOpenRest(true); }}>Add Rest Day</Button>
+              <Button
+                className="bg-rfl-navy hover:bg-rfl-navy/70 text-white h-8 flex-1"
+                onClick={() => setConcludedMode('workout')}
+              >
+                Add Workout
+              </Button>
+              <Button
+                variant="outline"
+                className="h-8 flex-1 border-black text-rfl-navy hover:bg-rfl-navy/70"
+                onClick={() => setConcludedMode('rest')}
+              >
+                Add Rest Day
+              </Button>
             </div>
           </CardHeader>
           <CardContent>
@@ -884,6 +905,20 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      {concludedMode && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 text-center space-y-4">
+            <h2 className="text-2xl font-semibold text-rfl-navy">🎉 RFL has officially concluded!</h2>
+            <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+              {concludedMessages[concludedMode]}
+            </p>
+            <Button className="bg-rfl-navy text-white w-full" onClick={() => setConcludedMode(null)}>
+              Got it
+            </Button>
+          </div>
+        </div>
+      )}
 
       {openWorkout && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">

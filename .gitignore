@@ -23,6 +23,7 @@
 # misc
 .DS_Store
 *.pem
+public/audio/VIDEO-2025-11-21-14-07-53.mp4
 
 # debug
 npm-debug.log*
