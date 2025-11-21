@@ -58,7 +58,7 @@ export default function RulesPage() {
               <li><strong>Golf</strong> — 9‑hole round</li>
               <li><strong>Steps</strong> — 10,000 steps in a day</li>
             </ul>
-            
+
             <div className="mt-4 space-y-3">
               <div className="flex items-start gap-3 p-4 bg-green-50 rounded-lg border border-green-200">
                 <CheckCircle className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
@@ -109,6 +109,7 @@ export default function RulesPage() {
           <div className="space-y-3">
             <div className="flex items-start gap-3">
               <Clock className="w-6 h-6 text-rfl-light-blue mt-0.5 flex-shrink-0" />
+              <span className="text-sm sm:text-base"><strong>Workout Submission:</strong> Post your approved workout with screenshot in the FFL website by 11:59pm. Your captain/VC will send them all to Governors in provided format.</span>
               <span className="text-sm sm:text-base"><strong>Workout Submission:</strong> Post your approved workout with screenshot in the RFL website by 11:59pm. Your captain/VC will send them all to Governors in provided format.</span>
             </div>
             <div className="flex items-start gap-3">
@@ -256,6 +257,7 @@ export default function RulesPage() {
           </div>
           <div className="flex items-start gap-3">
             <Trophy className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
+            <span className="text-sm sm:text-base"><strong>Prizes:</strong> Winner ₹25,000 • Runner ₹15,000 • Third ₹10,000 • FFL FAIR PLAY award + team/individual prizes.</span>
             <span className="text-sm sm:text-base"><strong>Prizes:</strong> Winner ₹25,000 • Runner ₹15,000 • Third ₹10,000 • RFL FAIR PLAY award + team/individual prizes.</span>
           </div>
         </CardContent>
