@@ -519,20 +519,33 @@ export default function DashboardPage() {
       const memberIds = ((teamUsers || []) as Array<{ id: string }>).map((u)=> String(u.id));
       
       // Fetch all approved entries for the team for the season
-      const { data } = await getSupabase()
-        .from('entries')
-        .select('id, user_id, date, type, rr_value')
-        .eq('team_id', effectiveTeamId)
-        .eq('status', 'approved')
-        .gte('date', seasonStartStr)
-        .lte('date', todayLocalStr);
-      const entries = (data || []) as Array<{ id: string; user_id: string; date: string; type: string | null; rr_value: number | null }>;
-      const teamPts = entries.length; // every approved entry counts 1
+      const [{ data: entriesData }, { data: bonusData }] = await Promise.all([
+        getSupabase()
+          .from('entries')
+          .select('id, user_id, date, type, rr_value')
+          .eq('team_id', effectiveTeamId)
+          .eq('status', 'approved')
+          .gte('date', seasonStartStr)
+          .lte('date', todayLocalStr),
+        getSupabase()
+          .from('special_challenge_team_scores')
+          .select('score')
+          .eq('team_id', effectiveTeamId)
+      ]);
+      const entries = (entriesData || []) as Array<{ id: string; user_id: string; date: string; type: string | null; rr_value: number | null }>;
+      let teamPts = entries.length; // every approved entry counts 1
+      // Apply 11-player adjustment
+      if (ELEVEN_PLAYER_TEAMS.has(String(effectiveTeamId))) {
+        teamPts = teamPts * ELEVEN_TEAM_FACTOR;
+      }
+      teamPts = Math.round(teamPts);
+      // Add Special Challenge bonus points
+      const bonus = (bonusData || []).reduce((sum, r) => sum + (Number(r.score) || 0), 0);
+      teamPts += bonus;
       const rrVals = entries.map(e => (typeof e.rr_value === 'number' ? e.rr_value : Number(e.rr_value || 0))).filter(v => v > 0);
       const teamRR = rrVals.length ? Math.round((rrVals.reduce((a,b)=>a+b,0)/rrVals.length)*100)/100 : null;
       // Team rest days (approved)
       const restUsed = entries.filter(e => String(e.type) === 'rest').length;
-      
       // Team missed days: per member per day with no entry from season start through yesterday
       const memberSet = new Set(memberIds);
       const byDateUser = new Set(entries.map(e => `${String(e.date)}|${String(e.user_id)}`));
