@@ -267,14 +267,15 @@ export default function GovernorPage() {
         const { data: updData, error: updErr } = await supabase
           .from('special_challenge_team_scores')
           .update({ score: r.score })
-          .match({ challenge_id: r.challenge_id, team_id: r.team_id });
+          .match({ challenge_id: r.challenge_id, team_id: r.team_id })
+          .select();
 
         if (updErr) {
           alert(`Save failed (scores update): ${updErr.message}`);
           return;
         }
 
-        const updatedCount = Array.isArray(updData) ? updData.length : (updData ? 1 : 0);
+        const updatedCount = Array.isArray(updData) ? updData.length : 0;
         if (updatedCount === 0) {
           const { error: insErr } = await supabase
             .from('special_challenge_team_scores')
