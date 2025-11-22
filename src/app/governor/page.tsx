@@ -260,12 +260,30 @@ export default function GovernorPage() {
       }
     }
     if (upsertRows.length) {
-      const { error: upErr } = await getSupabase()
-        .from('special_challenge_team_scores')
-        .upsert(upsertRows, { onConflict: 'challenge_id,team_id' });
-      if (upErr) {
-        alert(`Save failed (scores): ${upErr.message}`);
-        return;
+      // Fallback for environments without a UNIQUE constraint on (challenge_id,team_id):
+      // Try updating each row first; if update affected 0 rows, insert instead.
+      // This avoids the Postgres "no unique or exclusion constraint matching the ON CONFLICT specification" error.
+      for (const r of upsertRows) {
+        const { data: updData, error: updErr } = await supabase
+          .from('special_challenge_team_scores')
+          .update({ score: r.score })
+          .match({ challenge_id: r.challenge_id, team_id: r.team_id });
+
+        if (updErr) {
+          alert(`Save failed (scores update): ${updErr.message}`);
+          return;
+        }
+
+        const updatedCount = Array.isArray(updData) ? updData.length : (updData ? 1 : 0);
+        if (updatedCount === 0) {
+          const { error: insErr } = await supabase
+            .from('special_challenge_team_scores')
+            .insert(r);
+          if (insErr) {
+            alert(`Save failed (scores insert): ${insErr.message}`);
+            return;
+          }
+        }
       }
     }
     if (deleteTeamIds.length) {

@@ -102,6 +102,7 @@ export default function TeamPage() {
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const [teamMissedDays, setTeamMissedDays] = useState<number>(0);
   const [teamRestDays, setTeamRestDays] = useState<number>(0);
+  const [balancedTeamPoints, setBalancedTeamPoints] = useState<number | null>(null);
 
   // Generate dropdown options based on league dates
   const dropdownOptions = useMemo(() => {
@@ -169,6 +170,7 @@ export default function TeamPage() {
     if (teamId) {
       loadMembersSummary(teamId, selectedPeriod);
       loadTeamSummary(teamId, selectedPeriod);
+      loadBalancedTeamPoints(teamId, selectedPeriod);
     }
   }, [teamId, selectedPeriod]);
 
@@ -231,7 +233,7 @@ export default function TeamPage() {
       const weekNum = parseInt(timePeriod.split('-')[1]);
       cur = addDaysUTC(seasonStart, (weekNum - 1) * 7);
       const weekEnd = addDaysUTC(cur, 6);
-      const todayUtc = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate()));
+      const todayUtc = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCFullYear()));
       const yesterdayUtc = new Date(todayUtc.getTime() - 24 * 3600 * 1000);
       // If current week is ongoing, stop at yesterday; otherwise use week end
       endDateCalc = weekEnd.getTime() >= todayUtc.getTime() ? yesterdayUtc : weekEnd;
@@ -246,6 +248,43 @@ export default function TeamPage() {
     }
     
     setTeamMissedDays(missed);
+  }
+
+  async function loadBalancedTeamPoints(currentTeamId: string, timePeriod: string = "overall") {
+    let startDate: string | null = null;
+    let endDate: string | null = null;
+    if (timePeriod !== "overall") {
+      const currentYear = new Date().getUTCFullYear();
+      const seasonStart = firstWeekStart(currentYear);
+      const weekNum = parseInt(timePeriod.split('-')[1]);
+      const weekStart = addDaysUTC(seasonStart, (weekNum - 1) * 7);
+      const weekEnd = addDaysUTC(weekStart, 6);
+      startDate = weekStart.toISOString().split('T')[0];
+      endDate = weekEnd.toISOString().split('T')[0];
+    }
+    let query = getSupabase()
+      .from('entries')
+      .select('id')
+      .eq('team_id', currentTeamId)
+      .eq('status', 'approved');
+    if (startDate && endDate) {
+      query = query.gte('date', startDate).lte('date', endDate);
+    }
+    const [{ data: entries }, { data: bonusData }] = await Promise.all([
+      query,
+      getSupabase()
+        .from('special_challenge_team_scores')
+        .select('score')
+        .eq('team_id', currentTeamId)
+    ]);
+    let teamPoints = (entries || []).length;
+    if (currentTeamId === '4f7c2b8d-e8d8-44c8-b189-fc07d05390bd') {
+      teamPoints = teamPoints * (10 / 11);
+    }
+    teamPoints = Math.round(teamPoints);
+    const bonus = (bonusData || []).reduce((sum, r) => sum + (Number(r.score) || 0), 0);
+    teamPoints += bonus;
+    setBalancedTeamPoints(teamPoints);
   }
 
   // Close dropdown when clicking outside
@@ -363,7 +402,7 @@ export default function TeamPage() {
         const weekNum = parseInt(timePeriod.split('-')[1]);
         cur = addDaysUTC(seasonStart, (weekNum - 1) * 7);
         const weekEnd = addDaysUTC(cur, 6);
-        const todayUtc = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate()));
+        const todayUtc = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCFullYear()));
         const yesterdayUtc = new Date(todayUtc.getTime() - 24 * 3600 * 1000);
         endDate = weekEnd.getTime() >= todayUtc.getTime() ? yesterdayUtc : weekEnd;
       }
@@ -426,11 +465,10 @@ export default function TeamPage() {
   }, [teamId, page]);
 
   const totals = useMemo(() => {
-    const pts = members.reduce((a, m) => a + (m.approved_points || 0), 0);
     const rrVals = members.map(m => m.avg_rr).filter((v): v is number => typeof v === 'number');
     const rr = rrVals.length ? (rrVals.reduce((a,b)=>a+b,0)/rrVals.length) : 0;
-    return { pts, rr: Number((Math.round(rr * 100) / 100).toFixed(2)) };
-  }, [members]);
+    return { pts: balancedTeamPoints ?? 0, rr: Number((Math.round(rr * 100) / 100).toFixed(2)) };
+  }, [members, balancedTeamPoints]);
 
   return (
     <div className="container mx-auto px-4 py-8">
