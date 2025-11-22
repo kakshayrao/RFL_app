@@ -721,14 +721,17 @@ export default function DashboardPage() {
             <button
               onClick={() => setShowAudioPopup(true)}
               // className="p-3 rounded-md border border-gray-300 hover:bg-gray-50 bg-white flex items-center justify-center"
-              className="p-3 rounded-md border border-gray-300 hover:bg-gray-50 bg-white flex items-center justify-center -translate-x-[20px] translate-y-[10px] transform"
+              className="p-3 rounded-md border border-gray-300 hover:bg-gray-50 bg-white flex items-center justify-center -translate-x-[10px] translate-y-[10px] transform"
               aria-label="Show audio video"
               title="Show audio video"
             >
               <Music4Icon className="w-6 h-6 text-rfl-navy" />
             </button>
           </div>
-          <p className="text-gray-600">Let's crush those fitness goals today 💪</p>
+          <div className="flex items-center justify-between">
+            <p className="text-gray-600">Let's crush those fitness goals today 💪</p>
+            <p className="text-sm text-gray-600">RFL Anthem</p>
+          </div>
       </div>
         <Card>
           <CardHeader>
