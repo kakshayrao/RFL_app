@@ -361,7 +361,9 @@ export default function TeamPage() {
       if (row) {
         const rrNum = typeof e.rr_value === 'number' ? e.rr_value : Number(e.rr_value || 0);
         const isRest = e.type === 'rest';
-        row.approved_points += isRest ? (rrNum > 0 ? 1 : 0) : 1;
+        // Align with My Progress: every approved entry counts 1 point, including rest days
+        // Previously rest days with rr_value <= 0 were excluded causing discrepancies (e.g. 82 vs 79)
+        row.approved_points += 1;
         if (isRest) row.rest_used = (row.rest_used || 0) + 1;
         if (rrNum > 0) {
           const agg = rrAgg.get(uid) || { sum: 0, count: 0 };
