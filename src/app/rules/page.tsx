@@ -252,11 +252,11 @@ export default function RulesPage() {
         <CardContent className="space-y-3">
           <div className="flex items-start gap-3">
             <Trophy className="w-6 h-6 text-rfl-coral mt-0.5 flex-shrink-0" />
-            <span className="text-sm sm:text-base">On‑site games & challenges for extra points + Awards around <strong>Jan 24–25</strong>.</span>
+            <span className="text-sm sm:text-base">On‑site games & challenges for extra points + Awards on <strong>Nov 21</strong>.</span>
           </div>
           <div className="flex items-start gap-3">
             <Trophy className="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0" />
-            <span className="text-sm sm:text-base"><strong>Prizes:</strong> Winner ₹25,000 • Runner ₹15,000 • Third ₹10,000 • FFL FAIR PLAY award + team/individual prizes.</span>
+            <span className="text-sm sm:text-base"><strong>Prizes:</strong> Winner ₹1,00,000 • Runner ₹65,000 • Third ₹35,000 • RFL FAIR PLAY Award + Team/Individual Prizes. </span>
           </div>
         </CardContent>
       </Card>

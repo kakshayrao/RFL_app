@@ -50,6 +50,9 @@ function parseYmdLocal(s: string): Date {
 }
 
 const SEASON_START = '2025-09-01';
+// Season end (inclusive) — clamp governor "as of" calculations to this date so
+// missed-day tallies don't include dates after the season finished.
+const SEASON_END = '2025-11-21';
 
 export default function GovernorPage() {
   const { data: session, status } = useSession();
@@ -363,7 +366,12 @@ export default function GovernorPage() {
       return;
     }
     const yesterday = addDaysLocal(new Date(), -1);
-    setAsOf(ymdLocal(yesterday));
+    let asOfLocal = ymdLocal(yesterday);
+    // Clamp asOf to season end if the season has already finished
+    if (SEASON_END && asOfLocal > SEASON_END) {
+      asOfLocal = SEASON_END;
+    }
+    setAsOf(asOfLocal);
   }, [session, status, router]);
 
   // Load data when asOf set

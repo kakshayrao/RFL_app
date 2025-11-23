@@ -67,10 +67,10 @@ function seasonFixedStart(): Date {
   return new Date(Date.UTC(2025, 8, 1)); // Sept 1, 2025
 }
 function seasonFixedEnd(): Date {
-  return new Date(Date.UTC(2025, 10, 30)); // Nov 30, 2025 (November = 10)
+  return new Date(Date.UTC(2025, 10, 21)); // Nov 21, 2025 (November = 10)
 }
 const SEASON_START_LOCAL_STR = '2025-09-01';
-const SEASON_END_LOCAL_STR = '2025-11-30';
+const SEASON_END_LOCAL_STR = '2025-11-21';
 function firstWeekStart(_year: number): Date {
   // Week 1 starts exactly on season start (Oct 15, 2025 - Wednesday)
   return seasonFixedStart();
@@ -455,6 +455,10 @@ export default function DashboardPage() {
       const yesterdayCutoff = new Date(today.getTime() - 24 * 3600 * 1000);
       const seasonStartStr = SEASON_START_LOCAL_STR;
       const todayLocalStr = formatLocalYYYYMMDD(today);
+      const seasonEnd = seasonFixedEnd();
+      // Clamp query upper bound to season end so we don't count after-season days
+      const upperDateStr = todayLocalStr > SEASON_END_LOCAL_STR ? SEASON_END_LOCAL_STR : todayLocalStr;
+      const lastCutoff = yesterdayCutoff.getTime() > seasonEnd.getTime() ? seasonEnd : yesterdayCutoff;
 
       // Fetch all my approved entries for the season
       const { data: myEntries } = await getSupabase()
@@ -463,7 +467,7 @@ export default function DashboardPage() {
         .eq('user_id', userId)
         .eq('status', 'approved')
         .gte('date', seasonStartStr)
-        .lte('date', todayLocalStr);
+        .lte('date', upperDateStr);
 
       const entries = (myEntries || []) as Array<{ type: string; rr_value: number | null; date: string }>;
 
@@ -477,7 +481,7 @@ export default function DashboardPage() {
       const byDate = new Set(entries.map(e => String(e.date)));
       let missed = 0;
       let cur = new Date(seasonStart);
-      while (cur.getTime() <= yesterdayCutoff.getTime()) {
+      while (cur.getTime() <= lastCutoff.getTime()) {
         const ds = formatLocalYYYYMMDD(new Date(cur));
         if (!byDate.has(ds)) missed += 1;
         cur = new Date(cur.getTime() + 24 * 3600 * 1000);
@@ -510,6 +514,9 @@ export default function DashboardPage() {
       const yesterdayCutoff2 = new Date(today.getTime() - 24 * 3600 * 1000);
       const seasonStartStr = SEASON_START_LOCAL_STR;
       const todayLocalStr = formatLocalYYYYMMDD(today);
+      const seasonEnd2 = seasonFixedEnd();
+      const upperDateStr2 = todayLocalStr > SEASON_END_LOCAL_STR ? SEASON_END_LOCAL_STR : todayLocalStr;
+      const lastCutoff2 = yesterdayCutoff2.getTime() > seasonEnd2.getTime() ? seasonEnd2 : yesterdayCutoff2;
       
       // Fetch team members
       const { data: teamUsers } = await getSupabase()
@@ -526,7 +533,7 @@ export default function DashboardPage() {
           .eq('team_id', effectiveTeamId)
           .eq('status', 'approved')
           .gte('date', seasonStartStr)
-          .lte('date', todayLocalStr),
+          .lte('date', upperDateStr2),
         getSupabase()
           .from('special_challenge_team_scores')
           .select('score')
@@ -552,7 +559,7 @@ export default function DashboardPage() {
       let missed = 0;
       {
         let day = new Date(seasonStart);
-        while (day.getTime() <= yesterdayCutoff2.getTime()) {
+        while (day.getTime() <= lastCutoff2.getTime()) {
           const ds = formatLocalYYYYMMDD(new Date(day));
           memberSet.forEach((uid)=>{ if (!byDateUser.has(`${ds}|${uid}`)) missed += 1; });
           day = new Date(day.getTime() + 24 * 3600 * 1000);
